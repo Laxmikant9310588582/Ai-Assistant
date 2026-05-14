@@ -1,0 +1,624 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* HEADER */
+.top-header {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 80px;
+    background: linear-gradient(180deg, #c8e6c9, #dcedc8);
+    border-bottom: 1px solid #a5d6a7;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.tool-text {
+    color: #e53935;
+}
+
+/* HEADER RIGHT SECTION */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-dropdown {
+    position: relative;
+}
+
+.nav-dropdown {
+    padding: 10px 40px 10px 20px;
+    border-radius: 6px;
+    border: 1px solid #a5d6a7;
+    background: #c8e6c9;
+    color: #2e7d32;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    transition: background 0.2s;
+}
+
+.nav-dropdown:hover {
+    background: #a5d6a7;
+}
+
+.dropdown-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #2e7d32;
+}
+
+/* USER ICON */
+.user-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #333;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.user-icon:hover {
+    background: #1a1a1a;
+}
+
+.user-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* LEFT GREEN STRIP */
+.left-strip {
+    background: linear-gradient(180deg, #c8e6c9, #dcedc8);
+    border-right: 1px solid #a5d6a7;
+}
+
+/* MAIN */
+.main-content {
+    height: calc(100vh - 70px);
+    overflow: visible;   /* CHANGE */
+    background: #f5f5f5;
+}
+
+/* LAYOUT */
+.chatbot-layout {
+    display: flex;
+    height: 100%;
+    gap: 24px;
+    padding: 30px 40px;
+}
+
+/* LEFT */
+.chatbot-left {
+    width: 32%;
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        position: relative;
+          overflow: visible;
+           display: flex;
+    flex-direction: column;
+}
+
+.panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    color: #333;
+}
+
+.upload-section {
+    margin-bottom: 20px;
+      flex-shrink: 0;
+}
+
+.recent-chats {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.upload-area {
+    border: 2px dashed #c8e6c9;
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+    background: #fafafa;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.upload-area:hover {
+    border-color: #a5d6a7;
+    background: #f5f5f5;
+}
+
+.upload-icon {
+    font-size: 36px;
+    color: #66bb6a;
+    margin-bottom: 8px;
+}
+
+.upload-title {
+    font-weight: 600;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    color: #333;
+    font-size: 15px;
+}
+
+.upload-hint {
+    font-size: 13px;
+    color: #777;
+}
+
+.file-upload-input {
+    display: none;
+}
+
+.uploaded-file {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.uploaded-file-name {
+    font-size: 14px;
+    color: #2e7d32;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+.remove-file-btn {
+    background: transparent;
+    border: none;
+    color: #e53935;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.remove-file-btn:hover {
+    background: rgba(229, 57, 53, 0.1);
+}
+
+/* RIGHT */
+.chatbot-right {
+    flex: 1;
+    min-width: 0;
+    background: #fff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* CHAT HEADER */
+.chatbot-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fafafa;
+    border-radius: 8px 8px 0 0;
+    flex-shrink: 0;
+}
+
+.chat-icon {
+    width: 40px;
+    height: 40px;
+    background: #c8e6c9;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.chat-header-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.chat-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.chat-subtitle {
+    font-size: 13px;
+    color: #777;
+}
+
+/* MESSAGES */
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #fafafa;
+    min-height: 0;
+}
+
+.message {
+    margin-bottom: 14px;
+    max-width: 85%;
+    padding: 11px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.message.user {
+    margin-left: auto;
+    background: #66bb6a;
+    color: white;
+}
+
+.message.bot {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    color: #333;
+}
+
+.message-content {
+    white-space: pre-wrap;
+}
+
+/* INPUT */
+.chat-input-container {
+    padding: 14px 20px;
+    border-top: 1px solid #e0e0e0;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.chat-input-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 11px 15px;
+    border-radius: 14px;
+    border: 1px solid #d0d0d0;
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    min-height: 68px;
+    max-height: 140px;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+}
+
+.chat-input:focus {
+    outline: none;
+    border-color: #66bb6a;
+}
+
+.chat-input:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.send-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: #66bb6a;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+}
+
+.send-btn:hover:not(:disabled) {
+    background: #5cb85c;
+}
+
+.send-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* SUMMARY BUTTON */
+.summary-button-container {
+    padding: 16px 20px;
+    border-top: 1px solid #e0e0e0;
+    background: #fff;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.generate-summary-btn {
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: none;
+    background: #66bb6a;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+    min-width: 200px;
+}
+
+.generate-summary-btn:hover:not(:disabled) {
+    background: #5cb85c;
+}
+
+.generate-summary-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* SCROLLBAR */
+.chat-messages::-webkit-scrollbar { width: 6px; }
+.chat-messages::-webkit-scrollbar-track { background: #f5f5f5; }
+.chat-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+.chat-messages::-webkit-scrollbar-thumb:hover { background: #999; }
+
+/* ══ NAV BUTTONS ══ */
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    /* Default state: plain background, NO transition (instant reset on leave) */
+    background: rgba(255,255,255,0.5);
+    color: #000;
+    border: 1px solid #000 !important;
+    border-radius: 6px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: none !important;
+    outline: none !important;
+    /* NO transition here — so mouse-leave resets instantly */
+    line-height: 1.4;
+    text-decoration: none;
+    height: 38px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* Pseudo-element does the animated fill */
+.nav-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: black;
+    transform: translateX(-100%);
+    /* Only transition on :hover enter — not on leave */
+    transition: none;
+    z-index: -1;
+}
+
+/* On hover: slide in from left (animate) */
+.nav-btn:hover::before {
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-btn:hover,
+.nav-btn:hover * {
+    color: #fff !important;
+}
+
+/* Dropdown open (Bootstrap .show) — keep filled */
+.nav-btn.show::before {
+    transform: translateX(0);
+}
+.nav-btn.show,
+.nav-btn.show * {
+    color: #fff !important;
+}
+
+/* feature-active: stays green */
+.nav-btn.feature-active {
+    background: #b9dfba !important;
+    color: #000 !important;
+    border-color: #81c784 !important;
+    font-weight: 600;
+}
+.nav-btn.feature-active::before {
+    display: none;
+}
+.nav-btn.feature-active:hover {
+    background: #a5d6a7 !important;
+    color: #000 !important;
+}
+/* =============================================
+   ADD THIS CSS TO YOUR FILE2 HTML <style> TAG
+   (Docs Dropdown — multi-file support)
+   ============================================= */
+
+/* Docs Dropdown Wrapper */
+.docs-dropdown-wrap {
+    margin-top: 10px;
+    position: relative;
+    z-index: 200;
+}
+
+/* Toggle Button */
+.docs-dropdown-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 12px;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    color: #333;
+    transition: all 0.2s;
+}
+.docs-dropdown-btn:hover { background: #e8f5e9; border-color: #a5d6a7; }
+.docs-dropdown-btn.open {
+    background: #e8f5e9;
+    border-color: #a5d6a7;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.docs-btn-left { display: flex; align-items: center; gap: 8px; }
+
+.docs-count-badge {
+    background: #95D5B2;
+    color: #1b5e20;
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.docs-chevron { font-size: 10px; color: #888; transition: transform 0.2s; }
+.docs-chevron.open { transform: rotate(180deg); }
+
+/* Dropdown Menu */
+.docs-dropdown-menu {
+    display: none;
+    position: absolute;
+      top: calc(100% + 5px);
+    background: #fff;
+    border: 1px solid #a5d6a7;
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    overflow-y: auto;
+      left: 0;
+         right: 0;
+    max-height: 180px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.docs-dropdown-menu.open { display: block; }
+
+/* Each File Row */
+.doc-list-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-top: 1px solid #f0f0f0;
+}
+.doc-list-item:first-child { border-top: none; }
+.doc-list-item:hover { background: #f5f5f5; }
+.doc-list-item.active { background: #e8f5e9; }
+
+/* Radio Dot */
+.doc-radio {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    border: 1.5px solid #bbb;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+}
+.doc-list-item.active .doc-radio { border-color: #2e7d32; background: #2e7d32; }
+.doc-list-item.active .doc-radio::after {
+    content: ''; width: 5px; height: 5px;
+    background: #fff; border-radius: 50%; display: block;
+}
+
+.doc-name-wrap { flex: 1; min-width: 0; }
+.doc-name { font-size: 12px; font-weight: 500; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.doc-list-item.active .doc-name { color: #2e7d32; }
+.doc-active-label { font-size: 10px; color: #2e7d32; font-weight: 500; margin-top: 1px; }
+
+/* Remove Button */
+.doc-remove-btn {
+    background: transparent; border: none;
+    color: #bbb; cursor: pointer; font-size: 13px;
+    padding: 2px 5px; border-radius: 4px; flex-shrink: 0;
+}
+.doc-remove-btn:hover { color: #e53935; background: #fee2e2; }
+
+
+/* =============================================
+   ADD THIS TO YOUR FILE2 HTML uploadSection div
+   (Replace the old uploadedFile single-file bar)
+   ============================================= */
+
+/*
+REPLACE this in your HTML:
+
+    <div id="uploadedFile" style="display:none; ...">
+        <span id="uploadedFileName">...</span>
+        <button id="removeFileBtn">...</button>
+    </div>
+
+WITH this:
+
+    <div id="docsDropdownWrap" class="docs-dropdown-wrap" style="display:none;">
+        <button class="docs-dropdown-btn" id="docsDropdownBtn" type="button">
+            <span class="docs-btn-left">
+                <i class="fas fa-folder-open" style="font-size:13px;color:#2e7d32;"></i>
+                <span>Uploaded Documents</span>
+                <span class="docs-count-badge" id="docsCount">0</span>
+            </span>
+            <i class="fas fa-chevron-down docs-chevron" id="docsChevron"></i>
+        </button>
+        <div class="docs-dropdown-menu" id="docsItemList"></div>
+    </div>
+*/
