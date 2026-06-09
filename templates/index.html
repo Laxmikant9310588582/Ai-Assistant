@@ -924,7 +924,7 @@ function showErr(id, msg) { const el = document.getElementById(id); el.textConte
 
 // ── PROJECT ──
 function fetchSelectProject(uid, code, fname, lname, email, token, db_url) {
-    fetch(`http://{your_ip}/{your_url_prefix}/selectproject?user_id=${encodeURIComponent(uid)}&selected_code=${encodeURIComponent(code)}&first_name=${encodeURIComponent(fname)}&last_name=${encodeURIComponent(lname)}&email=${encodeURIComponent(email)}&db_url=${encodeURIComponent(db_url)}`,
+    fetch(`http://34.4.25.166:8080/AI_Assistant/selectproject?user_id=${encodeURIComponent(uid)}&selected_code=${encodeURIComponent(code)}&first_name=${encodeURIComponent(fname)}&last_name=${encodeURIComponent(lname)}&email=${encodeURIComponent(email)}&db_url=${encodeURIComponent(db_url)}`,
         { headers: { 'Authorization': `Token ${token}` } }).catch(console.error);
 }
 async function populateProjects() {
@@ -947,7 +947,7 @@ function selectProject(code) {
     if (spinner) spinner.style.display = 'inline-block';
     if (label)   label.textContent = 'Loading...';
     const s = getCookie('userInfo') || {};
-    fetch(`http://{your_ip}/api/auth/get-db-url?project_code=${code}`, { headers: { 'Authorization': `Token ${s.token || ''}` } })
+    fetch(`http://34.4.25.166:8080/api/auth/get-db-url?project_code=${code}`, { headers: { 'Authorization': `Token ${s.token || ''}` } })
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => {
             s.selected_code = code; s.db_url = data.db_url; setCookie('userInfo', s);
@@ -976,7 +976,7 @@ function selectModule(name, el) {
     document.querySelectorAll('#module-btn + .dropdown-menu .dropdown-item').forEach(i => i.classList.remove('is-active'));
     el.classList.add('is-active');
 }
-function handleLogout() { window.location.href = 'http://{your_ip}/auth/logout'; }
+function handleLogout() { window.location.href = 'http://34.4.25.166:8080/auth/logout'; }
 function selectSubModule(name, feature, el) {
     document.getElementById('selectedSubModule').textContent = name;
     document.querySelectorAll('#submodule-btn + .dropdown-menu .dropdown-item').forEach(i => i.classList.remove('is-active'));

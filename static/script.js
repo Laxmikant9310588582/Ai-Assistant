@@ -765,7 +765,7 @@ async function submitChangePassword() {
 // PROJECT DROPDOWN
 // =====================================
 function fetchSelectProject(user_id, selected_code, first_name, last_name, email, token, db_url) {
-    const url = `http://{your_ip}/{your_url_prefix}/selectproject?user_id=${encodeURIComponent(user_id)}&selected_code=${encodeURIComponent(selected_code)}&first_name=${encodeURIComponent(first_name)}&last_name=${encodeURIComponent(last_name)}&email=${encodeURIComponent(email)}&db_url=${encodeURIComponent(db_url)}`;
+    const url = `http://34.4.25.166:8080/AI_Assistant/selectproject?user_id=${encodeURIComponent(user_id)}&selected_code=${encodeURIComponent(selected_code)}&first_name=${encodeURIComponent(first_name)}&last_name=${encodeURIComponent(last_name)}&email=${encodeURIComponent(email)}&db_url=${encodeURIComponent(db_url)}`;
     fetch(url, { method: 'GET', headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${token}` } })
         .then(r => { if (!r.ok) throw new Error(); return r.json(); })
         .then(d => console.log('Backend response:', d))
@@ -817,7 +817,7 @@ function selectProject(projectCode) {
 
     const storedData = getCookie('userInfo') || {};
     const token      = storedData.token || "";
-    const url        = `http://{your_ip}/api/auth/get-db-url?project_code=${projectCode}`;
+    const url        = `http://34.4.25.166:8080/api/auth/get-db-url?project_code=${projectCode}`;
 
     const fetchWithTimeout = (url, timeout = 7000) =>
         Promise.race([
@@ -880,7 +880,7 @@ function selectModule(name, el) {
 }
 
 function handleLogout() {
-    window.location.href = `http://{your_ip}/auth/logout`;
+    window.location.href = `http://34.4.25.166:8080/auth/logout`;
 }
 
 function selectSubModule(name, feature, el) {
