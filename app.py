@@ -491,6 +491,10 @@ app.register_blueprint(ai, url_prefix='/AI_Assistant')
 def root_redirect():
     return redirect('/AI_Assistant')
 
+@app.route('/auth/logout')
+def auth_logout():
+    return redirect('/AI_Assistant/')
+
 
 if __name__ == '__main__':
     # DB table startup pe bana do
