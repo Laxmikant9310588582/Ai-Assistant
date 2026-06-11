@@ -493,7 +493,7 @@ def root_redirect():
 
 @app.route('/auth/logout')
 def auth_logout():
-    return redirect('/AI_Assistant/')
+     return redirect('http://34.4.25.166/auth/')
 
 
 if __name__ == '__main__':
