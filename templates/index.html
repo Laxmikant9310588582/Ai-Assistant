@@ -174,6 +174,10 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; c
 .generate-summary-btn:hover:not(:disabled) { background: #74c69d; }
 .generate-summary-btn:disabled { background: #ccc; cursor: not-allowed; }
 
+/* PRO CONNECT PANEL */
+.pro-connect-panel { display: none; padding: 0 !important; overflow: hidden; }
+.pro-connect-panel iframe { width: 100%; height: 100%; border: none; display: block; }
+
 /* CHANGE PASSWORD MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 10000; display: flex; align-items: center; justify-content: center; }
 .modal-box { background: #fff; border-radius: 12px; width: 100%; max-width: 420px; padding: 28px; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,0.18); }
@@ -219,6 +223,8 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; c
                 <li><a class="dropdown-item" href="#" data-submodule="QnA" data-feature="qna">QnA</a></li>
                 <li><a class="dropdown-item" href="#" data-submodule="Doc Summary" data-feature="doc-summary">Doc Summary</a></li>
                 <li><a class="dropdown-item" href="#" data-submodule="Chatbot" data-feature="chatbot">Chatbot</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" data-submodule="Pro Connect" data-feature="pro-connect">Pro Connect</a></li>
             </ul>
         </div>
         <div class="dropdown">
@@ -307,8 +313,8 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; c
             </div>
         </div>
 
-        <!-- RIGHT PANEL -->
-        <div class="chatbot-right">
+        <!-- RIGHT PANEL: QnA / Doc Summary / Chatbot -->
+        <div class="chatbot-right" id="mainPanel">
             <div class="chatbot-header">
                 <div class="chat-icon">📄</div>
                 <div>
@@ -326,6 +332,11 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; c
             <div id="summaryButtonContainer" class="summary-button-container" style="display:none;">
                 <button id="generateSummaryBtn" class="generate-summary-btn">Generate Summary</button>
             </div>
+        </div>
+
+        <!-- RIGHT PANEL: PRO CONNECT (iframe) -->
+        <div class="chatbot-right pro-connect-panel" id="proConnectPanel">
+            <iframe id="proConnectFrame" src="about:blank" title="Pro Connect"></iframe>
         </div>
 
     </div>
@@ -371,6 +382,9 @@ body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; c
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// ── PRO CONNECT CONFIG ──
+const PRO_CONNECT_URL = 'http://127.0.0.1:5050/pro-connect/';
+
 // ── COOKIES ──
 function setCookie(name, val) {
     document.cookie = `${name}=${encodeURIComponent(JSON.stringify(val))}; path=/`;
@@ -424,7 +438,8 @@ function getActiveFile() {
 // ── DOM REFS ──
 let chatTitle, chatSubtitle, uploadSection, uploadArea, fileUpload,
     chatMessages, chatInputContainer, chatInput, sendBtn,
-    summaryButtonContainer, generateSummaryBtn;
+    summaryButtonContainer, generateSummaryBtn,
+    mainPanel, proConnectPanel, proConnectFrame;
 
 // ── LOCAL STORAGE ──
 function getFileMap()          { try { return JSON.parse(localStorage.getItem('file_map') || '{}'); } catch { return {}; } }
@@ -668,21 +683,40 @@ function pushChat(feature, userMsg, botResp) {
     renderRecentChats();
 }
 
+// ===== FIX: history se chat load karne par file "hat" jaane wala bug =====
+// Pehle: initFeature() pehle call hota tha, jo uploadedFiles ko localStorage
+// se reload kar deta tha (ya khaali rakh deta), aur USKE BAAD file push hoti
+// thi — isliye dropdown render galat order mein hota tha aur file "disappear"
+// hoti dikhti thi ya doc dropdown khud band ho jaata tha.
+// Ab: file ko PEHLE uploadedFiles array mein taiyar karte hain, initFeature()
+// ko ek flag (skipFileReset) ke sath call karte hain taaki wo file ko reset
+// na kare, phir render karte hain.
 function loadConvIntoChat(conv) {
     chatMessages.innerHTML = '';
-    initFeature(conv.feature || 'qna');
 
+    // Step 1: file ko pehle taiyar karo (uploadedFiles mein add/select karo)
+    let targetIndex = -1;
     if (conv.filename) {
         const exists = uploadedFiles.find(f => f.filename === conv.filename);
         if (!exists) {
             const origName = conv.originalName || getOrigName(conv.filename) || conv.filename;
             uploadedFiles.push({ filename: conv.filename, origName });
-            activeFileIndex = uploadedFiles.length - 1;
+            targetIndex = uploadedFiles.length - 1;
         } else {
-            activeFileIndex = uploadedFiles.indexOf(exists);
+            targetIndex = uploadedFiles.indexOf(exists);
         }
+    }
+
+    // Step 2: initFeature ko bolo file state mat chhede (skipFileReset = true)
+    initFeature(conv.feature || 'qna', /*skipFileReset=*/true);
+
+    // Step 3: active file set karo aur save/render karo
+    if (targetIndex !== -1) {
+        activeFileIndex = targetIndex;
         saveUploadedFiles();
+        docsPage = Math.max(1, Math.ceil((targetIndex + 1) / DOCS_PER_PAGE));
         renderDocsList();
+        openDocsDropdown();
     }
 
     addBot(`📂 Loaded: ${conv.originalName || conv.filename || 'previous chat'}`);
@@ -730,10 +764,30 @@ async function saveToDB(feature, filename, userMsg, botResp) {
 }
 
 // ── FEATURE INIT ──
-function initFeature(feature) {
+// skipFileReset: jab true ho, to ye uploadedFiles/activeFileIndex ko reset
+// nahi karega, na hi localStorage se reload karega — sirf UI switch karega.
+// (loadConvIntoChat() history load karte waqt isko true karke bhejta hai.)
+function initFeature(feature, skipFileReset = false) {
     currentFeature = feature;
 
-    if (feature !== 'chatbot' && uploadedFiles.length === 0) {
+    // ── PRO CONNECT BRANCH ──
+    if (feature === 'pro-connect') {
+        if (mainPanel) mainPanel.style.display = 'none';
+        if (proConnectPanel) proConnectPanel.style.display = 'flex';
+        if (proConnectFrame) {
+            const cur = proConnectFrame.getAttribute('src');
+            if (!cur || cur === 'about:blank') {
+                proConnectFrame.src = PRO_CONNECT_URL;
+            }
+        }
+        return;
+    }
+
+    // Kisi normal feature pe wapas aate waqt Pro Connect panel hide karo
+    if (proConnectPanel) proConnectPanel.style.display = 'none';
+    if (mainPanel) mainPanel.style.display = 'flex';
+
+    if (!skipFileReset && feature !== 'chatbot' && uploadedFiles.length === 0) {
         const saved = loadUploadedFiles();
         uploadedFiles   = saved.files;
         activeFileIndex = saved.idx;
@@ -749,7 +803,7 @@ function initFeature(feature) {
     if (icon)     icon.style.display = 'block';
 
     closeDocsDropdown();
-    renderDocsList();
+    if (!skipFileReset) renderDocsList();
     chatMessages.innerHTML = '';
 
     if (feature === 'chatbot') {
@@ -776,17 +830,21 @@ function initFeature(feature) {
     if (feature === 'doc-summary') {
         chatInputContainer.style.display     = 'none';
         summaryButtonContainer.style.display = 'block';
-        addBot(uploadedFiles.length
-            ? `📄 ${uploadedFiles.length} document(s) ready. Click "Generate Summary" to proceed.`
-            : '📄 Please upload a document to generate a summary.');
+        if (!skipFileReset) {
+            addBot(uploadedFiles.length
+                ? `📄 ${uploadedFiles.length} document(s) ready. Click "Generate Summary" to proceed.`
+                : '📄 Please upload a document to generate a summary.');
+        }
     } else {
         chatInputContainer.style.display     = 'block';
         summaryButtonContainer.style.display = 'none';
         chatInput.placeholder = cfg.ph;
         chatInput.value       = '';
-        addBot(uploadedFiles.length
-            ? `✅ ${uploadedFiles.length} document(s) loaded. Ask your question!`
-            : cfg.subtitle);
+        if (!skipFileReset) {
+            addBot(uploadedFiles.length
+                ? `✅ ${uploadedFiles.length} document(s) loaded. Ask your question!`
+                : cfg.subtitle);
+        }
     }
 }
 
@@ -1008,6 +1066,9 @@ document.addEventListener('DOMContentLoaded', () => {
     sendBtn                = document.getElementById('sendBtn');
     summaryButtonContainer = document.getElementById('summaryButtonContainer');
     generateSummaryBtn     = document.getElementById('generateSummaryBtn');
+    mainPanel              = document.getElementById('mainPanel');
+    proConnectPanel        = document.getElementById('proConnectPanel');
+    proConnectFrame        = document.getElementById('proConnectFrame');
 
     document.getElementById('docsDropdownBtn')?.addEventListener('click', toggleDocsDropdown);
     initDocsSearch();

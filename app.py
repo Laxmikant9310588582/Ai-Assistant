@@ -507,7 +507,7 @@ if __name__ == '__main__':
     print(f"🔑 OpenAI Key:  {'✓ Yes' if os.getenv('OPENAI_API_KEY') else '✗ NOT FOUND'}")
     print(f"🗄️  DB Host:     {os.getenv('DB_HOST', 'localhost')}")
     print(f"🗄️  DB Name:     {os.getenv('DB_NAME', 'NOT SET')}")
-    print("🌐 URL: http://127.0.0.1:5009/AI_Assistant/")
+    print("🌐 URL: http://34.4.25.166:8080/AI_Assistant/")
     print("=" * 50 + "\n")
 
-    run_simple('0.0.0.0', 5009, app, use_debugger=True, use_reloader=True)
+    run_simple('0.0.0.0', 8080, app, use_debugger=False, use_reloader=False)

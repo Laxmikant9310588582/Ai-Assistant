@@ -1,4 +1,9 @@
 // =====================================
+// PRO CONNECT CONFIG
+// =====================================
+const PRO_CONNECT_URL = 'http://34.4.25.166:5050/pro-connect/';
+
+// =====================================
 // COOKIE HELPERS
 // =====================================
 function setCookie(name, value) {
@@ -93,6 +98,9 @@ let chatTitle, chatSubtitle, uploadSection, uploadArea, fileUpload,
     chatMessages, chatInputContainer, chatInput, sendBtn,
     summaryButtonContainer, generateSummaryBtn;
 
+// Pro Connect panel refs (set in DOMContentLoaded)
+let mainChatPanel, proConnectPanel, proConnectFrame;
+
 // =====================================
 // FEATURE CONFIG
 // =====================================
@@ -176,7 +184,6 @@ function renderDocsList() {
     if (docsPage > totalPages) docsPage = totalPages;
     if (docsPage < 1)          docsPage = 1;
 
-    // Show pagination only when more than DOCS_PER_PAGE items match
     if (paginEl) {
         paginEl.style.display = filtered.length > DOCS_PER_PAGE ? 'flex' : 'none';
         if (pageInfo) pageInfo.textContent = `${docsPage} / ${totalPages}`;
@@ -210,7 +217,7 @@ function renderDocsList() {
             activeFileIndex = parseInt(this.dataset.realIdx);
             saveUploadedFiles();
             renderDocsList();
-            openDocsDropdown(); // keep open so user sees the change
+            openDocsDropdown();
             const af = getActiveFile();
             addAssistantMessage(`📄 Active document switched to: "${af.origName}"`);
             renderInlineHistory();
@@ -224,7 +231,6 @@ function renderDocsList() {
             const removed = uploadedFiles[idx];
             uploadedFiles.splice(idx, 1);
             if (activeFileIndex >= uploadedFiles.length) activeFileIndex = uploadedFiles.length - 1;
-            // Adjust page if needed after removal
             const newFiltered   = getFilteredDocs();
             const newTotalPages = Math.max(1, Math.ceil(newFiltered.length / DOCS_PER_PAGE));
             if (docsPage > newTotalPages) docsPage = newTotalPages;
@@ -237,7 +243,6 @@ function renderDocsList() {
     });
 }
 
-// Highlight matched portion of filename
 function highlightMatch(text, query) {
     if (!query.trim()) return escapeHtml(text);
     const safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -409,7 +414,7 @@ function renderInlineHistory() {
     const old = document.getElementById('inlineHistoryDropdown');
     if (old) old.remove();
 
-    if (!getActiveFile() || !currentFeature || currentFeature === 'chatbot') return;
+    if (!getActiveFile() || !currentFeature || currentFeature === 'chatbot' || currentFeature === 'pro-connect') return;
 
     const chats     = getInlineChatsForCurrentFile();
     const totalMsgs = chats.reduce((acc, c) => acc + (c.messages || []).length, 0);
@@ -689,7 +694,7 @@ function closeChangePasswordModal() {
     document.getElementById('changePasswordModal').style.display = 'none';
 }
 
-function toggleCpEye(inputId, btn) {
+function toggleEye(inputId, btn) {
     const input = document.getElementById(inputId);
     const icon  = btn.querySelector('i');
     if (input.type === 'password') {
@@ -896,6 +901,34 @@ function selectSubModule(name, feature, el) {
 function initializeFeature(feature) {
     currentFeature = feature;
 
+    // ── PRO CONNECT BRANCH ──────────────────────────────────────
+    // Handled first and returns early — Pro Connect just shows an
+    // iframe, it doesn't use the upload/chat/summary UI at all.
+    if (feature === 'pro-connect') {
+        if (mainChatPanel)   mainChatPanel.style.display = 'none';
+        if (uploadSection)   uploadSection.style.display = 'none';
+
+        inlineHistoryOpen = false;
+        const oldInline = document.getElementById('inlineHistoryDropdown');
+        if (oldInline) oldInline.remove();
+
+        if (proConnectPanel) proConnectPanel.style.display = 'flex';
+
+        // Only set src once (or if it was reset to blank) so switching
+        // back and forth doesn't reload Pro Connect every time.
+        if (proConnectFrame) {
+            const cur = proConnectFrame.getAttribute('src');
+            if (!cur || cur === 'about:blank') {
+                proConnectFrame.src = PRO_CONNECT_URL;
+            }
+        }
+        return;
+    }
+
+    // ── Coming from Pro Connect back to a normal feature ────────
+    if (proConnectPanel) proConnectPanel.style.display = 'none';
+    if (mainChatPanel)   mainChatPanel.style.display = 'flex';
+
     // Reset files & dropdown state on feature switch
     uploadedFiles   = [];
     activeFileIndex = -1;
@@ -992,7 +1025,6 @@ async function handleFileUpload(file) {
 
         uploadedFiles.push({ filename: data.filename, origName: file.name });
         activeFileIndex = uploadedFiles.length - 1;
-        // Jump to the last page so the newly uploaded file is visible
         docsPage = Math.ceil(uploadedFiles.length / DOCS_PER_PAGE);
         saveUploadedFiles();
         renderDocsList();
@@ -1179,6 +1211,11 @@ document.addEventListener('DOMContentLoaded', function () {
     sendBtn                = document.getElementById('sendBtn');
     summaryButtonContainer = document.getElementById('summaryButtonContainer');
     generateSummaryBtn     = document.getElementById('generateSummaryBtn');
+
+    // Pro Connect refs
+    mainChatPanel   = document.getElementById('mainChatPanel');
+    proConnectPanel = document.getElementById('proConnectPanel');
+    proConnectFrame = document.getElementById('proConnectFrame');
 
     // Docs dropdown toggle
     document.getElementById('docsDropdownBtn')?.addEventListener('click', toggleDocsDropdown);

@@ -484,9 +484,9 @@ body {
     background: #a5d6a7 !important;
     color: #000 !important;
 }
+
 /* =============================================
-   ADD THIS CSS TO YOUR FILE2 HTML <style> TAG
-   (Docs Dropdown — multi-file support)
+   Docs Dropdown — multi-file support
    ============================================= */
 
 /* Docs Dropdown Wrapper */
@@ -594,31 +594,53 @@ body {
 }
 .doc-remove-btn:hover { color: #e53935; background: #fee2e2; }
 
+/* Docs search box */
+.docs-search-wrap { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; background: #fafafa; position: relative; }
+.docs-search-input { width: 100%; padding: 6px 28px 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; font-family: inherit; outline: none; background: #fff; color: #333; }
+.docs-search-input:focus { border-color: #66bb6a; }
+.docs-search-icon { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 11px; pointer-events: none; }
+.docs-search-clear { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 11px; cursor: pointer; background: none; border: none; padding: 0; display: none; line-height: 1; }
+.docs-list-body { max-height: 210px; overflow-y: auto; }
+.docs-list-body::-webkit-scrollbar { width: 4px; }
+.docs-list-body::-webkit-scrollbar-thumb { background: #c8e6c9; border-radius: 4px; }
+.docs-list-body::-webkit-scrollbar-track { background: transparent; }
+.docs-empty { text-align: center; color: #aaa; font-size: 12px; padding: 14px 10px; }
 
-/* =============================================
-   ADD THIS TO YOUR FILE2 HTML uploadSection div
-   (Replace the old uploadedFile single-file bar)
-   ============================================= */
+.docs-pagination { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-top: 1px solid #f0f0f0; background: #fafafa; }
+.docs-pg-btn { width: 24px; height: 24px; border-radius: 5px; border: 1px solid #ddd; background: #fff; color: #555; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.docs-pg-btn:hover:not(:disabled) { background: #000; color: #fff; border-color: #000; }
+.docs-pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.docs-pg-info { font-size: 11px; color: #888; }
 
-/*
-REPLACE this in your HTML:
+/* Recent chats sidebar items */
+.recent-empty { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
+.recent-item { padding: 8px 10px; border: 1px solid #f0f0f0; border-radius: 7px; margin-bottom: 6px; cursor: pointer; transition: background 0.15s; }
+.recent-item:hover { background: #f0faf1; border-color: #c8e6c9; }
+.recent-item.active { background: #c8e6c9; border-color: #a5d6a7; }
+.recent-title { font-size: 12px; font-weight: 500; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.recent-file { font-size: 10px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    <div id="uploadedFile" style="display:none; ...">
-        <span id="uploadedFileName">...</span>
-        <button id="removeFileBtn">...</button>
-    </div>
-
-WITH this:
-
-    <div id="docsDropdownWrap" class="docs-dropdown-wrap" style="display:none;">
-        <button class="docs-dropdown-btn" id="docsDropdownBtn" type="button">
-            <span class="docs-btn-left">
-                <i class="fas fa-folder-open" style="font-size:13px;color:#2e7d32;"></i>
-                <span>Uploaded Documents</span>
-                <span class="docs-count-badge" id="docsCount">0</span>
-            </span>
-            <i class="fas fa-chevron-down docs-chevron" id="docsChevron"></i>
-        </button>
-        <div class="docs-dropdown-menu" id="docsItemList"></div>
-    </div>
-*/
+/* History modal cards */
+.history-loading, .history-empty {
+    text-align: center; color: #aaa; font-size: 13px; padding: 30px 0;
+}
+.history-card {
+    border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px 14px;
+    margin-bottom: 10px; background: #fafafa;
+}
+.history-card-meta { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; font-size:11px; color:#888; }
+.history-badge { font-size:11px; font-weight:600; padding:2px 8px; border-radius:8px; }
+.history-badge.qna { background:#e3f2fd; color:#1565c0; }
+.history-badge.doc-summary { background:#f3e5f5; color:#6a1b9a; }
+.history-card-filename { display:inline-flex; align-items:center; gap:4px; }
+.history-card-question { font-size:13px; color:#333; margin-bottom:8px; background:#fff; padding:8px 10px; border-radius:6px; border:1px solid #eee; }
+.history-card-question-label { font-size:10px; color:#888; text-transform:uppercase; margin-bottom:3px; font-weight:600; }
+.history-card-answer-label { font-size:10px; color:#888; text-transform:uppercase; margin-bottom:3px; font-weight:600; }
+.history-card-answer-text { font-size:13px; color:#333; max-height:60px; overflow:hidden; white-space:pre-wrap; }
+.history-card-answer-text.expanded { max-height:none; }
+.history-expand-btn { background:none; border:none; color:#2e7d32; font-size:11px; cursor:pointer; margin-top:4px; padding:0; }
+.history-load-btn {
+    margin-top:8px; padding:6px 12px; border-radius:6px; border:1px solid #66bb6a;
+    background:#fff; color:#2e7d32; font-size:12px; cursor:pointer;
+}
+.history-load-btn:hover { background:#e8f5e9; }
