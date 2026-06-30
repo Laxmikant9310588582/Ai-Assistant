@@ -1,7 +1,7 @@
 // =====================================
 // PRO CONNECT CONFIG
 // =====================================
-const PRO_CONNECT_URL = 'http://34.4.25.166:5050/pro-connect/';
+const PRO_CONNECT_URL = '/pro-connect/';
 
 // =====================================
 // COOKIE HELPERS
